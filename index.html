@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mood Music App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🎵 How are you feeling?</h1>
+    
+    <!-- Mood Buttons -->
+    <div class="mood-buttons">
+      <button id="happy">😊</button>
+      <button id="sad">😢</button>
+      <button id="energetic">⚡</button>
+      <button id="calm">😌</button>
+      <button id="romantic">💕</button>
+      <button id="focused">🎯</button>
+    </div>
+    
+    <!-- Music Player -->
+    <div class="music-player">
+      <div class="now-playing">
+        <p>Now Playing:</p>
+        <h2 id="songTitle">Select a mood to start</h2>
+      </div>
+
+      <div class="controls">
+        <button id="prevBtn">⏮️</button>
+        <button id="playBtn">▶️</button>
+        <button id="nextBtn">⏭️</button>
+      </div>
+
+      <div class="progress-bar">
+        <div id="progress" class="progress"></div>
+      </div>
+
+      <div class="volume-control">
+        <span>🔊</span>
+        <input type="range" id="volumeSlider" min="0" max="100" value="70">
+      </div>
+    </div>
+
+    <!-- Hidden audio player -->
+    <audio id="audioPlayer"></audio>
+    
+  </div>
+  
+  <script src="script.js"></script>
+</body>
+</html>
