@@ -164,23 +164,36 @@ function prevSong() {
     }
 } 
 
+function updateProgress() {
+    const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+    progressBar.style.width = progress + '%';
+}
+
 //EVENT LISTENERS
-//Listens for clicks on mood buttons
+
+// Mood button clicks
 moodButtons.forEach(button => {
     button.addEventListener('click', () => {
-        //get the mood from buttons id
         const mood = button.id;
-        
-        //calls set mood function
         setMood(mood);
-
-        //Add 'active' class to clicked button
         moodButtons.forEach(btn => btn.classList.remove('active'));
         button.classList.add('active');
     });
-
-    playBtn.addEventListener('click', togglePlay);
-    nextBtn.addEventListener('click', nextSong);
-    prevBtn.addEventListener('click', prevSong);
-    
 });
+
+// Music control buttons
+playBtn.addEventListener('click', togglePlay);
+nextBtn.addEventListener('click', nextSong);
+prevBtn.addEventListener('click', prevSong);
+
+// Volume Slider
+volumeSlider.addEventListener('input', (e) => {
+    const volume = e.target.value;
+    audioPlayer.volume = volume / 100;
+});
+
+// Update the progress bar as song plays
+audioPlayer.addEventListener('timeupdate', updateProgress);
+
+// Auto-Play next song when current ends
+audioPlayer.addEventListener('ended', nextSong);
