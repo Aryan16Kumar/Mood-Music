@@ -1,6 +1,9 @@
 //each mood has an array of songs
 //each song is an object with titles and url
 
+// YouTube API Key
+const YOUTUBE_API_KEY = 'AIzaSyAIv8-X5OisSymVm0fLU40UYaLabHFaw9I'; 
+
 const moodPlaylists = {
     happy: [
         {title: "song name", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"},
@@ -84,16 +87,27 @@ let isPlaying = false;
 
 //functions
 
-function setMood(mood) {
+async function setMood(mood) {
     //saving the current mood
     currentMood = mood;
 
-    //geting the playlist for this mood
-    currentPlaylist = moodPlaylists[mood];
+    //Show loading message
+    songTitle.textContent = 'Loading Songs...';
 
-    //start from the first song
+    //get yt videos for this mood
+    const youtubePlaylist = await searchYouTubeByMood(mood);
+
+    //use youtube playlist if available, else fallback to predefined playlist
+    if (youtubePlaylist.length > 0) {
+        currentPlaylist = youtubePlaylist;
+    } else {
+        currentPlaylist = moodPlaylists[mood];
+    }
+
+    //start from first song
     currentSongIndex = 0;
 
+    //change theme based on mood
     document.body.className = mood;
 
     //loading the first song
@@ -169,11 +183,45 @@ function updateProgress() {
     progressBar.style.width = progress + '%';
 }
 
+// Search YouTube for videos based on mood
+async function searchYouTubeByMood(mood) {
+  // Different search terms for each mood
+  const searchTerms = {
+    happy: 'happy upbeat music',
+    sad: 'sad emotional music',
+    energetic: 'energetic workout music',
+    calm: 'calm relaxing music',
+    romantic: 'romantic love music',
+    focused: 'focus study music'
+  };
+  
+  const searchQuery = searchTerms[mood];
+  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchQuery}&type=video&videoCategoryId=10&maxResults=10&key=${YOUTUBE_API_KEY}`;
+  
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    // Convert YouTube results to our playlist format
+    const playlist = data.items.map(item => ({
+      title: item.snippet.title,
+      videoId: item.id.videoId,
+      url: `https://www.youtube.com/watch?v=${item.id.videoId}`
+    }));
+    
+    return playlist;
+    
+  } catch (error) {
+    console.error('Error fetching YouTube videos:', error);
+    return [];
+  }
+}
+
 //EVENT LISTENERS
 
 // Mood button clicks
 moodButtons.forEach(button => {
-    button.addEventListener('click', () => {
+    button.addEventListener('click', async () => {
         const mood = button.id;
         setMood(mood);
         moodButtons.forEach(btn => btn.classList.remove('active'));
