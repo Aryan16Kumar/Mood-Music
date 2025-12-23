@@ -2,7 +2,7 @@
 //each song is an object with titles and url
 
 // YouTube API Key
-const YOUTUBE_API_KEY = 'AIzaSyAIv8-X5OisSymVm0fLU40UYaLabHFaw9I'; 
+const YOUTUBE_API_KEY = CONFIG.YoutubeAPIKey; 
 
 const moodPlaylists = {
     happy: [
