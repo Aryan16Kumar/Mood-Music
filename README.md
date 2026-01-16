@@ -23,8 +23,8 @@ This project allows users to select their mood via emoji buttons, which then:
 - [x] Basic music player (play, pause, next, previous)
 - [x] Volume control
 - [x] Progress bar
-- [ ] Responsive design
-- [ ] Better UI/UX
+- [x] Responsive design
+- [x] Better UI/UX
 
 ### Phase 2: 🔮 Future Updates
 - [ ] Camera-based face expression detection
@@ -79,14 +79,14 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 👨‍💻 Author
 
-**Your Name**
+**Aryan Kumar**
 - GitHub: [@Aryan16Kumar](https://github.com/Aryan16Kumar)
 
 ---
 
 ## 📌 Project Status
 
-**Current Progress:** Building Phase 1 - Core Features
+**Current Progress:** Building Phase 2 - Integrating Gemini
 
 **Last Updated:** December 2025
 
