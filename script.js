@@ -85,6 +85,37 @@ let currentPlaylist = [];
 let currentSongIndex = 0;
 let isPlaying = false;
 
+//Youtube Player Variable
+let player;
+let playerReady = false;
+
+//intialize Youtube Player when API loads
+window.onYouTubeIframeAPIReady = function() {
+    player = new YT.Player('youtubePlayer', {
+        height: '0',
+        width: '0',
+        playerVars: {
+           'playsinline': 1,
+           'controls' : 0, 
+        },
+        events: {
+            'onReady': onPlayerReady,
+            'onstateChange': onPlayerStateChange
+        }
+    });
+}
+function onPlayerReady(event) {
+    playerReady = true;
+    console.log('YouTube Player is ready');
+}
+
+function onPlayerStateChange(event)  {
+    //when video ends (state 0), play next song
+    if (event.data === 0) {
+        nextSong();
+    }
+}
+
 //functions
 
 async function setMood(mood) {
@@ -115,14 +146,18 @@ async function setMood(mood) {
 }
 
 function loadSong(index) {
-    //geting the song object from the playlist
+if (!currentPlaylist || currentPlaylist.length === 0) return;
+
     const song = currentPlaylist[index];
 
-    //Setting the audio player's source to the song url
-    audioPlayer.src = song.url;
-
-    //Updating song title on screen
+    //Update Song title
     songTitle.textContent = song.title;
+
+    //Load Youtube video if player is ready
+    if (playerReady && song.videoId) {
+        player.loadVideoById(song.videoId);
+        player.pauseVideo();//Dont autoplay yet
+    }
 }
 
 function togglePlay() {
@@ -132,15 +167,20 @@ function togglePlay() {
         return;
     }
 
+    if(!playerReady) {
+        alert('Player is loading, please wait');
+        return;
+    }
+
     //If music is playing, Pause it
     if(isPlaying) {
-        audioPlayer.pause();
+        player.pauseVideo();
         playBtn.textContent = '▶️' ;
     }
 
     //If musics is paused, play it
-    else {
-        audioPlayer.play();
+    else {  
+        player.playVideo();
         playBtn.textContent = '⏸️';
     }
 
@@ -179,10 +219,28 @@ function prevSong() {
 } 
 
 function updateProgress() {
-    const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-    progressBar.style.width = progress + '%';
+  console.log('updateProgress called');
+  
+  if (!playerReady) {
+    console.log('Player not ready');
+    return;
+  }
+  
+  try {
+    const currentTime = player.getCurrentTime();
+    const duration = player.getDuration();
+    
+    console.log('Time:', currentTime, 'Duration:', duration);
+    
+    if (duration > 0) {
+      const progress = (currentTime / duration) * 100;
+      progressBar.style.width = progress + '%';
+      console.log('Progress set to:', progress + '%');
+    }
+  } catch (error) {
+    console.error('Progress error:', error);
+  }
 }
-
 // Search YouTube for videos based on mood
 async function searchYouTubeByMood(mood) {
   // Different search terms for each mood
@@ -237,11 +295,10 @@ prevBtn.addEventListener('click', prevSong);
 // Volume Slider
 volumeSlider.addEventListener('input', (e) => {
     const volume = e.target.value;
-    audioPlayer.volume = volume / 100;
+    if(playerReady) {
+        player.setVolume(volume);
+    }
 });
 
 // Update the progress bar as song plays
-audioPlayer.addEventListener('timeupdate', updateProgress);
-
-// Auto-Play next song when current ends
-audioPlayer.addEventListener('ended', nextSong);
+setInterval(updateProgress, 1000);
