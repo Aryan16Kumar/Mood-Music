@@ -42,12 +42,17 @@
         <input type="range" id="volumeSlider" min="0" max="100" value="70">
       </div>
     </div>
-
-    <!-- Hidden audio player -->
-    <audio id="audioPlayer"></audio>
     
   </div>
   
+  <!--Youtube Player (Hidden)-->
+  <div id="youtubePlayer"></div>
+
+  <!-- Load Youtube API first -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <!-- Then Load configuration and script files -->
+  <script src="config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
